@@ -1,0 +1,35 @@
+DROP TABLE [Customer]; 
+DROP TABLE [Order]; 
+CREATE TABLE [Customer] (
+	[CustomerId] [INT] IDENTITY NOT NULL PRIMARY KEY,
+	[Name] [NVARCHAR](256) NOT NULL,
+	[Sity] [NVARCHAR](256) NOT NULL)
+
+CREATE TABLE [Order] (
+	[OrderId] [INT] IDENTITY NOT NULL PRIMARY KEY,
+	[IdCustomer] [INT] NOT NULL,
+	[ProductName] [NVARCHAR](256) NOT NULL,
+	[Price] [INT] NOT NULL)
+
+
+INSERT INTO [Customer]([Name], [Sity])
+VALUES ('Ерёменко Егор Львович', 'Москва'), ( 'Носов Яромир Викторович', 'Йошкар-Ола' ), ( 'Бобылёв Цезарь Станиславович', 'Москва')
+
+INSERT INTO [Order]([IdCustomer], [ProductName], [Price])
+VALUES (1, 'Апельсин', 100), ( 1, 'Яблоко', 50 ), ( 1, 'Огурец', 30), ( 2, 'Ананас', 300), ( 2, 'Лимоны', 50 ), ( 3, 'Бананы', 70), ( 3, 'Тыква', 500)
+
+UPDATE [Customer] 
+SET [Sity] = 'Йошкар-Ола'
+WHERE [CustomerId] = 3
+
+DELETE FROM [Order] WHERE OrderId = 7;	
+
+SELECT 
+	*
+FROM
+	[Customer]
+
+SELECT 
+	*
+FROM
+	[Order];
