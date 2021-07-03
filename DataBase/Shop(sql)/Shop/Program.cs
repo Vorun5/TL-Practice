@@ -69,7 +69,6 @@ namespace Shop
                         Console.WriteLine($"Комманда {command} некорректна.");
                         break;
                 }
-                Console.ReadKey();
                 command = Console.ReadLine().ToLower();
             }
         }
