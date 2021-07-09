@@ -12,7 +12,7 @@ namespace Shop
         static void Main(string[] args)
         {
 
-            Console.WriteLine($"Доступные комманды: SelectCustomer, SelectOrder, InsertCustomer, InsertOreders, \r\n" +
+            Console.WriteLine($"Доступные комманды: SelectCustomer, SelectOrder, InsertCustomer, InsertOreder, \r\n" +
                 $"UpdateCustomer, UpdateOrder, NumberOfCustomer, NumberOfOrder, SumOrder, HumanStatistics. \r\n" + 
                 $"Завершить работу: exit.");
             string command = Console.ReadLine().ToLower();
@@ -37,7 +37,7 @@ namespace Shop
                             Console.WriteLine($"| {order.OrderId} | {order.IdCustomer} | {order.ProductName} | {order.Price} |");
                         }
                         break;
-                    case "insertorders":
+                    case "insertorder":
                         Order createdOrder = InsertOrder(2, 9, "Тыква", 123);
                         Console.WriteLine($"Created post: \r\n" +
                             $"| {createdOrder.OrderId} | {createdOrder.IdCustomer} | {createdOrder.ProductName} | {createdOrder.Price} |");
