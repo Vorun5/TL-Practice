@@ -9,7 +9,7 @@ namespace Shop
     class Order
     {
         public int OrderId;
-        public int IdCustomer;
+        public int CustomerId;
         public string ProductName;
         public int Price;
     }

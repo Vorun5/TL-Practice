@@ -1,46 +1,46 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace Shop
-{ 
-   class Program 
-   { 
-    
-        private static string _connectionString = @"Data Source=WIN-J8MCEPL7DG6;Initial Catalog=Shop;Integrated Security=True";
+{
+    class Program
+    {
+
+        private static readonly string _connectionString = @"Data Source=WIN-J8MCEPL7DG6;Initial Catalog=Shop;Integrated Security=True";
         static void Main(string[] args)
         {
 
-            Console.WriteLine($"Доступные комманды: SelectCustomer, SelectOrder, InsertCustomer, InsertOreders, \r\n" +
-                $"UpdateCustomer, UpdateOrder, NumberOfCustomer, NumberOfOrder, SumOrder, HumanStatistics. \r\n" + 
+            Console.WriteLine($"Доступные комманды: SelectCustomer, SelectOrder, InsertCustomer, InsertOreder, \r\n" +
+                $"UpdateCustomer, UpdateOrder, NumberOfCustomer, NumberOfOrder, SumOrder, HumanStatistics. \r\n" +
                 $"Завершить работу: exit.");
             string command = Console.ReadLine().ToLower();
-            List<Order> orders = null;
-            List<Customer> customers = null;
             while (command != "exit")
             {
-                switch(command){
+                switch (command)
+                {
                     case "exit":
                         return;
                     case "selectcustomer":
-                        customers = ReadCustomers();
+                        List<Customer> customers = ReadCustomers();
                         foreach (Customer customer in customers)
                         {
                             Console.WriteLine($"| {customer.CustomerId} | {customer.Name} | {customer.City} |");
                         }
                         break;
                     case "selectorder":
-                        orders = ReadOrders();
+                        List<Order> orders = ReadOrders();
                         foreach (Order order in orders)
                         {
-                            Console.WriteLine($"| {order.OrderId} | {order.IdCustomer} | {order.ProductName} | {order.Price} |");
+                            Console.WriteLine($"| {order.OrderId} | {order.CustomerId} | {order.ProductName} | {order.Price} |");
                         }
                         break;
-                    case "insertorders":
+                    case "insertorder":
                         Order createdOrder = InsertOrder(2, 9, "Тыква", 123);
                         Console.WriteLine($"Created post: \r\n" +
-                            $"| {createdOrder.OrderId} | {createdOrder.IdCustomer} | {createdOrder.ProductName} | {createdOrder.Price} |");
+                            $"| {createdOrder.OrderId} | {createdOrder.CustomerId} | {createdOrder.ProductName} | {createdOrder.Price} |");
                         break;
                     case "insertcustomer":
                         Customer createdCustomer = InsertCustomer(4, "Артём", "Москва");
@@ -48,7 +48,7 @@ namespace Shop
                             $"| {createdCustomer.CustomerId} | {createdCustomer.Name} | {createdCustomer.City} |");
                         break;
                     case "updatecustomer":
-                         UpdateCustomer(5, "Фирдавси");
+                        UpdateCustomer(5, "Фирдавси");
                         break;
                     case "updateorder":
                         UpdateOrder(5, 132);
@@ -104,40 +104,40 @@ namespace Shop
             return customers;
         }
 
-         private static List<Order> ReadOrders()
-          {
-              List<Order> orders = new List<Order>();
-              using (SqlConnection connection = new SqlConnection(_connectionString))
-              {
-                  connection.Open();
-                  using (SqlCommand command = new SqlCommand())
-                  {
-                      command.Connection = connection;
-                      command.CommandText =
-                      @"SELECT 
-                          *                    
+        private static List<Order> ReadOrders()
+        {
+            List<Order> orders = new List<Order>();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandText =
+                    @"SELECT  
+                          *
                       FROM [Order]";
-         
-                      using (SqlDataReader reader = command.ExecuteReader())
-                      {
-                          while (reader.Read())
-                          {
-                              var order = new Order
-                              {
-                                  OrderId = Convert.ToInt32(reader["OrderId"]),
-                                  IdCustomer = Convert.ToInt32(reader["IdCustomer"]),
-                                  ProductName = Convert.ToString(reader["ProductName"]),
-                                  Price = Convert.ToInt32(reader["Price"])
-                              };
-                              orders.Add(order);
-                          }
-                      }
-                  }
-              }
-              return orders;
-          }
 
-        private static Order InsertOrder(int orderId, int customer, string productName, int price)
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var order = new Order
+                            {
+                                OrderId = Convert.ToInt32(reader["OrderId"]),
+                                CustomerId = Convert.ToInt32(reader["CustomerId"]),
+                                ProductName = Convert.ToString(reader["ProductName"]),
+                                Price = Convert.ToInt32(reader["Price"])
+                            };
+                            orders.Add(order);
+                        }
+                    }
+                }
+            }
+            return orders;
+        }
+
+        private static Order InsertOrder(int orderId, int customerId, string productName, int price)
         {
             Order order = new Order();
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -148,20 +148,20 @@ namespace Shop
                     command.CommandText = @"
                     INSERT INTO [Order]
                        ([OrderId],
-                        [Customer],
+                        [CustomerId],
                         [productName],
                         [Price]) 
                     VALUES 
                        (@orderId,
-                        @customer,
+                        @customerId,
                         @productName,
                         @price)
                     SELECT SCOPE_IDENTITY()";
 
                     command.Parameters.Add("@orderId", SqlDbType.NVarChar).Value = orderId;
                     order.OrderId = orderId;
-                    command.Parameters.Add("@customer", SqlDbType.NVarChar).Value = customer;
-                    order.IdCustomer = customer;
+                    command.Parameters.Add("@customer", SqlDbType.NVarChar).Value = customerId;
+                    order.CustomerId = customerId;
                     command.Parameters.Add("@productName", SqlDbType.Int).Value = productName;
                     order.ProductName = productName;
                     command.Parameters.Add("@price", SqlDbType.NVarChar).Value = price;
@@ -319,7 +319,7 @@ namespace Shop
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.Connection = connection;
-                    command.CommandText = $"SELECT COUNT(*)  AS NumberOfOrder FROM ([Customer] JOIN [Order] ON [Customer].CustomerId = [Order].IdCustomer) WHERE [Customer].CustomerId = {customerId}";
+                    command.CommandText = $"SELECT COUNT(*)  AS NumberOfOrder FROM ([Customer] JOIN [Order] ON [Customer].CustomerId = [Order].CustomerId) WHERE [Customer].CustomerId = {customerId}";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -327,7 +327,7 @@ namespace Shop
                             numberOfOrders = reader.GetInt32(numberOfOrders);
                         }
                     }
-                    command.CommandText = $"SELECT Sum(Price) AS AllPrice FROM ([Customer] JOIN [Order] ON [Customer].CustomerId = [Order].IdCustomer) WHERE [Customer].CustomerId = {customerId} ";
+                    command.CommandText = $"SELECT Sum(Price) AS AllPrice FROM ([Customer] JOIN [Order] ON [Customer].CustomerId = [Order].CustomerId) WHERE [Customer].CustomerId = {customerId} ";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
