@@ -1,0 +1,14 @@
+<div>
+    <mat-form-field>
+        <mat-label>ToDo</mat-label>
+        <input matInput placeholder="What we need to do?" [(ngModel)]="currentTodoItemName">
+    </mat-form-field>
+    <button (click)="addTodoItem()" class="add-button" mat-raised-button color="primary">Add</button>
+</div>
+<ul>
+    <li class="todo-item" *ngFor="let todoItem of todoItems">
+        <mat-checkbox class="example-margin" [(ngModel)]="todoItem.done" (change)="updateTodoItem(todoItem)">
+            <span [class]="{'todo-item-done': todoItem.done}">{{todoItem.name}}</span>
+        </mat-checkbox>
+    </li>
+</ul>
